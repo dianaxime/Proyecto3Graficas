@@ -15,6 +15,8 @@ WHITE = (255, 255, 255)
 RED = (255, 30, 15)
 GRAY = (136, 136, 136)
 BACKGROUND = (0, 255, 255)
+YELLOW = (255, 165, 15)
+GREEN = (5, 220, 20)
 
 colors = {
     "1": (255, 0, 0),
@@ -151,12 +153,15 @@ class Raycaster:
         self.point(self.player["x"], self.player["y"], WHITE)
 
         for i in range(0, 500):
-            a = self.player["a"] - self.player["fov"] / \
-                2 + (i * self.player["fov"] / 500)
-            d, m, tx = self.cast_ray(a)
-            x = 500 + i
-            h = (500 / (d * cos(a - self.player["a"]))) * 50
-            self.draw_stake(x, h, tx, textures[m])
+            try:
+                a = self.player["a"] - self.player["fov"] / \
+                    2 + (i * self.player["fov"] / 500)
+                d, m, tx = self.cast_ray(a)
+                x = 500 + i
+                h = (500 / (d * cos(a - self.player["a"]))) * 50
+                self.draw_stake(x, h, tx, textures[m])
+            except:
+                pass
 
         for i in range(0, 500):
             self.point(499, i, (0, 0, 0))
@@ -212,19 +217,24 @@ class Raycaster:
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     exit(0)
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_0:
+                    if event.key == pygame.K_r:
                         intro = False
                         self.game_intro()
 
-            gameDisplay.fill(GRAY)
-            largeText = pygame.font.Font('freesansbold.ttf', 100)
-            smallText = pygame.font.Font('freesansbold.ttf', 35)
-            TextSurf, TextRect = self.text_objects("Game Over", largeText)
-            TextRect.center = (int(1000/2), int(500/2))
+            gameDisplay.fill(RED)
+            largeText = pygame.font.Font('freesansbold.ttf', 75)
+            mediumText = pygame.font.Font('freesansbold.ttf', 35)
+            smallText = pygame.font.Font('freesansbold.ttf', 15)
+            TextSurf, TextRect = self.text_objects("GAME OVER", largeText)
+            TextRect.center = (int(1000/2), int(400/2))
             gameDisplay.blit(TextSurf, TextRect)
             TextSurf, TextRect = self.text_objects(
-                "Presiona 0 para ver el menu", smallText)
-            TextRect.center = (int(1000/2), int(700/2))
+                "R para reiniciar", mediumText)
+            TextRect.center = (int(1000/2), int(600/2))
+            gameDisplay.blit(TextSurf, TextRect)
+            TextSurf, TextRect = self.text_objects(
+                "ESC para salir", smallText)
+            TextRect.center = (int(1000/2), int(800/2))
             gameDisplay.blit(TextSurf, TextRect)
             pygame.display.update()
             clock.tick(15)
@@ -236,19 +246,20 @@ class Raycaster:
                 if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
                     exit(0)
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_0:
+                    if event.key == pygame.K_r:
                         intro = False
                         self.game_intro()
 
-            gameDisplay.fill(WHITE)
-            largeText = pygame.font.Font('freesansbold.ttf', 100)
-            smallText = pygame.font.Font('freesansbold.ttf', 35)
-            TextSurf, TextRect = self.text_objects("You won", largeText)
-            TextRect.center = (int(1000/2), int(500/2))
+            gameDisplay.fill(GREEN)
+            largeText = pygame.font.Font('freesansbold.ttf', 60)
+            smallText = pygame.font.Font('freesansbold.ttf', 15)
+            TextSurf, TextRect = self.text_objects(
+                "Congratulations, YOU WON", largeText)
+            TextRect.center = (int(1000/2), int(400/2))
             gameDisplay.blit(TextSurf, TextRect)
             TextSurf, TextRect = self.text_objects(
-                "Presiona 0 para ver el menu", smallText)
-            TextRect.center = (int(1000/2), int(700/2))
+                "ESC para salir", smallText)
+            TextRect.center = (int(1000/2), int(600/2))
             gameDisplay.blit(TextSurf, TextRect)
             pygame.display.update()
             clock.tick(15)
