@@ -2,7 +2,7 @@
 Diana Ximena de León Figueroa
 Carne 18607
 Graficas por Computadora
-Laboratorio #4 UI
+Proyecto 3
 '''
 
 import pygame
@@ -18,12 +18,6 @@ BACKGROUND = (190, 190, 190)
 YELLOW = (255, 165, 15)
 GREEN = (5, 220, 20)
 
-colors = {
-	"1": (255, 0, 0),
-	"2": (0, 255, 0),
-	"3": (0, 0, 255)
-}
-
 wall1 = pygame.image.load('./wall1.png')
 wall2 = pygame.image.load('./wall2.png')
 wall3 = pygame.image.load('./wall3.png')
@@ -36,8 +30,6 @@ enemy3 = pygame.image.load('./sprite3.png')
 enemy4 = pygame.image.load('./sprite4.png')
 
 hand = pygame.image.load('./player.png')
-
-sword1 = pygame.image.load('./sword.png')
 
 textures = {
 	"1": wall1,
@@ -54,28 +46,6 @@ enemies = [
 		"texture": enemy1
 	}
 ]
-
-swords = [
-	{
-		"x": 200,
-		"y": 70,
-		"texture": sword1,
-		'touch': False
-	},
-	{
-		"x": 300,
-		"y": 70,
-		"texture": sword1,
-		'touch': False
-	},
-	{
-		"x": 400,
-		"y": 70,
-		"texture": sword1,
-		'touch': False
-	}
-]
-
 
 class Raycaster:
 	def __init__(self, screen):
@@ -134,7 +104,6 @@ class Raycaster:
 					maxhit = hity
 				tx = int(maxhit * 128 / 50)
 				return d, self.map[j][i], tx
-			self.point(x, y, WHITE)
 			d += 1
 
 	def draw_stake(self, x, h, tx, texture):
@@ -198,11 +167,6 @@ class Raycaster:
 			self.point(enemy["x"], enemy["y"], BLACK)
 			self.draw_sprite(enemy)
 
-		'''for sword in swords:
-			if sword["touch"] == False:
-				self.point(sword["x"], sword["y"], BLACK)
-				self.draw_sprite(sword)
-		'''
 		self.draw_player(1000 - 256 - 128, 500 - 256)
 
 	def text_objects(self, text, font):
@@ -326,18 +290,6 @@ class Raycaster:
 						if e.key == pygame.K_DOWN:
 							r.player["x"] -= int(d * cos(r.player["a"]))
 							r.player["y"] -= int(d * sin(r.player["a"]))
-						'''if (r.player["x"] > 75 and r.player["x"] < 125) and (r.player["y"] > 125 and r.player["y"] < 175):
-							self.game_over()
-						if (r.player["x"] > 190 and r.player["x"] < 210) and (r.player["y"] == 70):
-							swords[0]["touch"] = True
-							swords_count += 1
-						if (r.player["x"] > 290 and r.player["x"] < 310) and (r.player["y"] == 70):
-							swords[1]["touch"] = True
-							swords_count += 1
-						if (r.player["x"] > 390 and r.player["x"] < 410) and (r.player["y"] == 70):
-							swords[2]["touch"] = True
-							swords_count += 1
-						'''
 					if e.key == pygame.K_SPACE:
 						paused = not paused
 			if not paused:
@@ -356,6 +308,6 @@ screen.set_alpha(None)
 r = Raycaster(screen)
 r.load_map('./map.txt')
 gameDisplay = pygame.display.set_mode((1000, 500))
-pygame.display.set_caption('Laboratorio 4 - UI')
+pygame.display.set_caption('Raycaster - Proyecto 3')
 clock = pygame.time.Clock()
 r.game_intro()
