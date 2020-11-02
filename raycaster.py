@@ -297,6 +297,9 @@ class Raycaster:
 				texto_de_salida = "FPS: " + str(int(clock.get_fps()))
 				texto = fuente.render(texto_de_salida, True, WHITE)
 				screen.blit(texto, [600, 20])
+				posX, posY = pygame.mouse.get_pos()
+				r.player["x"] = posX
+				r.player["y"] = posY
 				r.render()
 				pygame.display.flip()
 			
