@@ -268,13 +268,13 @@ class Raycaster:
 
 		fuente = pygame.font.Font(None, 25)
 		clock = pygame.time.Clock()
-		
+		FPS = 0
 		paused = False
 		running = True
 		while running:
 			screen.fill(BACKGROUND)
 			d = 10
-			clock.tick(60)
+			clock.tick(10)
 			for e in pygame.event.get():
 				if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
 					running = False
@@ -294,7 +294,8 @@ class Raycaster:
 					if e.key == pygame.K_SPACE:
 						paused = not paused
 			if not paused:
-				texto_de_salida = "FPS: " + str(int(clock.get_fps()))
+				FPS += clock.get_fps()
+				texto_de_salida = "FPS: " + str(int(FPS))
 				texto = fuente.render(texto_de_salida, True, WHITE)
 				screen.blit(texto, [600, 20])
 				posX, posY = pygame.mouse.get_pos()
