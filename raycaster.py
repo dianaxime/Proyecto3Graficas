@@ -14,7 +14,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 30, 15)
 GRAY = (136, 136, 136)
-BACKGROUND = (0, 255, 255)
+BACKGROUND = (190, 190, 190)
 YELLOW = (255, 165, 15)
 GREEN = (5, 220, 20)
 
@@ -184,7 +184,10 @@ class Raycaster:
 				h = (500 / (d * cos(a - self.player["a"]))) * 50
 				self.draw_stake(x, h, tx, textures[m])
 			except:
-				pass
+				self.player["x"] = self.blocksize + 20
+				self.player["y"] = self.blocksize + 20
+				self.game_over()
+
 
 		for i in range(0, 500):
 			self.point(499, i, (0, 0, 0))
@@ -195,11 +198,11 @@ class Raycaster:
 			self.point(enemy["x"], enemy["y"], BLACK)
 			self.draw_sprite(enemy)
 
-		for sword in swords:
+		'''for sword in swords:
 			if sword["touch"] == False:
 				self.point(sword["x"], sword["y"], BLACK)
 				self.draw_sprite(sword)
-
+		'''
 		self.draw_player(1000 - 256 - 128, 500 - 256)
 
 	def text_objects(self, text, font):
@@ -305,7 +308,7 @@ class Raycaster:
 		paused = False
 		running = True
 		while running:
-			screen.fill((0, 0, 0))
+			screen.fill(BACKGROUND)
 			d = 10
 			for e in pygame.event.get():
 				if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
@@ -323,7 +326,7 @@ class Raycaster:
 						if e.key == pygame.K_DOWN:
 							r.player["x"] -= int(d * cos(r.player["a"]))
 							r.player["y"] -= int(d * sin(r.player["a"]))
-						if (r.player["x"] > 75 and r.player["x"] < 125) and (r.player["y"] > 125 and r.player["y"] < 175):
+						'''if (r.player["x"] > 75 and r.player["x"] < 125) and (r.player["y"] > 125 and r.player["y"] < 175):
 							self.game_over()
 						if (r.player["x"] > 190 and r.player["x"] < 210) and (r.player["y"] == 70):
 							swords[0]["touch"] = True
@@ -334,6 +337,7 @@ class Raycaster:
 						if (r.player["x"] > 390 and r.player["x"] < 410) and (r.player["y"] == 70):
 							swords[2]["touch"] = True
 							swords_count += 1
+						'''
 					if e.key == pygame.K_SPACE:
 						paused = not paused
 			if not paused:
