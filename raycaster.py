@@ -135,21 +135,21 @@ class Raycaster:
 						self.zbuffer[x - 500] = sprite_d
 
 	def render(self):
-		for x in range(0, int(self.width / 2), self.blocksize):
+		'''for x in range(0, int(self.width / 2), self.blocksize):
 			for y in range(0, self.height, self.blocksize):
 				i = int(x/self.blocksize)
 				j = int(y/self.blocksize)
 				if self.map[j][i] != ' ':
-					self.draw_rectangle(x, y, textures[self.map[j][i]])
+					self.draw_rectangle(x, y, textures[self.map[j][i]])'''
 
 		self.point(self.player["x"], self.player["y"], WHITE)
 
-		for i in range(0, 500):
+		for i in range(0, 800):
 			try:
 				a = self.player["a"] - self.player["fov"] / \
-					2 + (i * self.player["fov"] / 500)
+					2 + (i * self.player["fov"] / self.width)
 				d, m, tx = self.cast_ray(a)
-				x = 500 + i
+				x = 200 + i
 				h = (500 / (d * cos(a - self.player["a"]))) * 50
 				self.draw_stake(x, h, tx, textures[m])
 			except:
@@ -158,16 +158,16 @@ class Raycaster:
 				self.game_over()
 
 
-		for i in range(0, 500):
+		'''for i in range(0, 500):
 			self.point(499, i, (0, 0, 0))
 			self.point(500, i, (0, 0, 0))
-			self.point(501, i, (0, 0, 0))
+			self.point(501, i, (0, 0, 0))'''
 
 		for enemy in enemies:
 			self.point(enemy["x"], enemy["y"], BLACK)
 			self.draw_sprite(enemy)
 
-		self.draw_player(1000 - 256 - 128, 500 - 256)
+		self.draw_player(1000 - 256 - 128 - 75, 500 - 256)
 
 	def text_objects(self, text, font):
 		textSurface = font.render(text, True, WHITE)
