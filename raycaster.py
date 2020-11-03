@@ -205,8 +205,11 @@ class Raycaster:
 			clock.tick(15)
 
 	def game_over(self):
+		lose_sound = pygame.mixer.Sound('./perder.wav')
+		pygame.mixer.Sound.play(lose_sound)
+		pygame.mixer.music.stop()
+		
 		intro = True
-
 		while intro:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -235,6 +238,10 @@ class Raycaster:
 			clock.tick(15)
 
 	def game_win(self):
+		win_sound = pygame.mixer.Sound('./ganar.wav')
+		pygame.mixer.Sound.play(win_sound)
+		pygame.mixer.music.stop()
+		
 		intro = True
 		while intro:
 			for event in pygame.event.get():
@@ -264,11 +271,15 @@ class Raycaster:
 			pygame.display.update()
 			clock.tick(15)
 
+	def sound(self):
+		pygame.mixer.music.load('./fondo.wav')
+		pygame.mixer.music.set_volume(0.8)
+		pygame.mixer.music.play(-1)
+
 	def game_start(self):
 
 		fuente = pygame.font.Font(None, 25)
 		clock = pygame.time.Clock()
-		FPS = 0
 		paused = False
 		running = True
 		while running:
@@ -291,21 +302,21 @@ class Raycaster:
 						if e.key == pygame.K_DOWN:
 							r.player["x"] -= int(d * cos(r.player["a"]))
 							r.player["y"] -= int(d * sin(r.player["a"]))
+						elif e.key == pygame.K_s: 
+							r.sound()
 					if e.key == pygame.K_SPACE:
 						paused = not paused
 			if not paused:
-				FPS += clock.get_fps()
-				texto_de_salida = "FPS: " + str(int(FPS))
+				texto_de_salida = "FPS: " + str(round(clock.get_fps(), 2))
 				texto = fuente.render(texto_de_salida, True, WHITE)
 				screen.blit(texto, [600, 20])
-				posX, posY = pygame.mouse.get_pos()
-				r.player["x"] = posX
-				r.player["y"] = posY
+				#posX, posY = pygame.mouse.get_pos()
+				#r.player["x"] = posX
+				#r.player["y"] = posY
 				r.render()
 				pygame.display.flip()
 			
-
-
+pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
 screen.set_alpha(None)
