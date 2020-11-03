@@ -12,11 +12,11 @@ import random
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 30, 15)
+LOSE = (90, 30, 5)
 GRAY = (136, 136, 136)
 BACKGROUND = (190, 190, 190)
-YELLOW = (255, 165, 15)
-GREEN = (5, 220, 20)
+INICIO = (5, 25, 40)
+WIN = (60, 130, 140)
 
 wall1 = pygame.image.load('./wall1.png')
 wall2 = pygame.image.load('./wall2.png')
@@ -170,7 +170,7 @@ class Raycaster:
 		self.draw_player(1000 - 256 - 128, 500 - 256)
 
 	def text_objects(self, text, font):
-		textSurface = font.render(text, True, BLACK)
+		textSurface = font.render(text, True, WHITE)
 		return textSurface, textSurface.get_rect()
 
 	def game_intro(self):
@@ -185,20 +185,20 @@ class Raycaster:
 						intro = False
 						self.game_start()
 
-			gameDisplay.fill(YELLOW)
+			gameDisplay.fill(INICIO)
 			largeText = pygame.font.Font('freesansbold.ttf', 75)
 			mediumText = pygame.font.Font('freesansbold.ttf', 35)
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
-				"Laboratorio #4 - UI", largeText)
+				"PROYECTO RAYCASTER", largeText)
 			TextRect.center = (int(1000/2), int(400/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"Q para empezar el juego", mediumText)
+				"PRESIONE Q PARA EMPEZAR", mediumText)
 			TextRect.center = (int(1000/2), int(600/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"ESC para salir", smallText)
+				"ESC PARA SALIR", smallText)
 			TextRect.center = (int(1000/2), int(800/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
@@ -219,7 +219,7 @@ class Raycaster:
 						intro = False
 						self.game_intro()
 
-			gameDisplay.fill(RED)
+			gameDisplay.fill(LOSE)
 			largeText = pygame.font.Font('freesansbold.ttf', 75)
 			mediumText = pygame.font.Font('freesansbold.ttf', 35)
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
@@ -227,11 +227,11 @@ class Raycaster:
 			TextRect.center = (int(1000/2), int(400/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"R para reiniciar", mediumText)
+				"PRESIONE R PARA REINICIAR", mediumText)
 			TextRect.center = (int(1000/2), int(600/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"ESC para salir", smallText)
+				"ESC PARA SALIR", smallText)
 			TextRect.center = (int(1000/2), int(800/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
@@ -252,20 +252,20 @@ class Raycaster:
 						intro = False
 						self.game_intro()
 
-			gameDisplay.fill(GREEN)
+			gameDisplay.fill(WIN)
 			largeText = pygame.font.Font('freesansbold.ttf', 60)
 			mediumText = pygame.font.Font('freesansbold.ttf', 35)
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
-				"Congratulations, YOU WON", largeText)
+				"NICE JOB, YOU WON", largeText)
 			TextRect.center = (int(1000/2), int(400/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"R para reiniciar", mediumText)
+				"PRESIONE R PARA REINICIAR", mediumText)
 			TextRect.center = (int(1000/2), int(600/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
-				"ESC para salir", smallText)
+				"ESC PARA SALIR", smallText)
 			TextRect.center = (int(1000/2), int(800/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
@@ -306,13 +306,16 @@ class Raycaster:
 							r.sound()
 					if e.key == pygame.K_SPACE:
 						paused = not paused
+				if e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP:
+					if not paused:
+						if e.button == 4:
+							r.player['a'] -= pi/20
+						if e.button == 5:
+							r.player['a'] += pi/20
 			if not paused:
 				texto_de_salida = "FPS: " + str(round(clock.get_fps(), 2))
 				texto = fuente.render(texto_de_salida, True, WHITE)
 				screen.blit(texto, [600, 20])
-				#posX, posY = pygame.mouse.get_pos()
-				#r.player["x"] = posX
-				#r.player["y"] = posY
 				r.render()
 				pygame.display.flip()
 			
