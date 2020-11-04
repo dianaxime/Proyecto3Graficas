@@ -64,11 +64,11 @@ class Raycaster:
 	def point(self, x, y, c=None):
 		screen.set_at((x, y), c)
 
-	def draw_rectangle(self, x, y, texture):
-		for cx in range(x, x + 50):
-			for cy in range(y, y + 50):
-				tx = int((cx - x) * 128/50)
-				ty = int((cy - y) * 128/50)
+	def draw_rectangle(self, x, y, texture, size):
+		for cx in range(x, x + size):
+			for cy in range(y, y + size):
+				tx = int((cx - x) * 128/size)
+				ty = int((cy - y) * 128/size)
 				c = texture.get_at((tx, ty))
 				self.point(cx, cy, c)
 
@@ -135,14 +135,15 @@ class Raycaster:
 						self.zbuffer[x - 500] = sprite_d
 
 	def render(self):
-		'''for x in range(0, int(self.width / 2), self.blocksize):
-			for y in range(0, self.height, self.blocksize):
-				i = int(x/self.blocksize)
-				j = int(y/self.blocksize)
+		for x in range(0, 200, 20):
+			for y in range(0, 200, 20):
+				i = int(x/20)
+				j = int(y/20)
 				if self.map[j][i] != ' ':
-					self.draw_rectangle(x, y, textures[self.map[j][i]])'''
+					self.draw_rectangle(x, y, textures[self.map[j][i]], 20)
 
-		self.point(self.player["x"], self.player["y"], WHITE)
+		self.point(int(self.player["x"] * 0.4), int(self.player["y"] * 0.4), LOSE)
+		print(self.player["x"] * 0.4, self.player["y"] * 0.4)
 
 		for i in range(0, 800):
 			try:
