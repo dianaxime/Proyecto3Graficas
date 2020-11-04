@@ -21,22 +21,17 @@ WIN = (60, 130, 140)
 wall1 = pygame.image.load('./wall1.png')
 wall2 = pygame.image.load('./wall2.png')
 wall3 = pygame.image.load('./wall3.png')
-wall4 = pygame.image.load('./wall4.png')
-wall5 = pygame.image.load('./wall5.png')
 
 enemy1 = pygame.image.load('./sprite1.png')
-enemy2 = pygame.image.load('./sprite2.png')
-enemy3 = pygame.image.load('./sprite3.png')
-enemy4 = pygame.image.load('./sprite4.png')
 
 hand = pygame.image.load('./player.png')
+
+flechas = pygame.image.load('./flechas.png')
 
 textures = {
 	"1": wall1,
 	"2": wall2,
 	"3": wall3,
-	"4": wall4,
-	"5": wall5,
 }
 
 enemies = [
@@ -72,12 +67,12 @@ class Raycaster:
 				c = texture.get_at((tx, ty))
 				self.point(cx, cy, c)
 
-	def draw_player(self, xi, yi, w=256, h=256):
+	def draw_player(self, xi, yi, element, w=256, h=256):
 		for x in range(xi, xi + w):
 			for y in range(yi, yi + h):
 				tx = int((x - xi) * 32/w)
 				ty = int((y - yi) * 32/h)
-				c = hand.get_at((tx, ty))
+				c = element.get_at((tx, ty))
 				if c != (152, 0, 136, 255):
 					self.point(x, y, c)
 
@@ -135,22 +130,12 @@ class Raycaster:
 						self.zbuffer[x - 500] = sprite_d
 
 	def render(self):
-		for x in range(0, 200, 20):
-			for y in range(0, 200, 20):
-				i = int(x/20)
-				j = int(y/20)
-				if self.map[j][i] != ' ':
-					self.draw_rectangle(x, y, textures[self.map[j][i]], 20)
-
-		self.point(int(self.player["x"] * 0.4), int(self.player["y"] * 0.4), LOSE)
-		print(self.player["x"] * 0.4, self.player["y"] * 0.4)
-
-		for i in range(0, 800):
+		for i in range(0, 1000):
 			try:
 				a = self.player["a"] - self.player["fov"] / \
 					2 + (i * self.player["fov"] / self.width)
 				d, m, tx = self.cast_ray(a)
-				x = 200 + i
+				x = i
 				h = (500 / (d * cos(a - self.player["a"]))) * 50
 				self.draw_stake(x, h, tx, textures[m])
 			except:
@@ -158,17 +143,22 @@ class Raycaster:
 				self.player["y"] = self.blocksize + 20
 				self.game_over()
 
-
-		'''for i in range(0, 500):
-			self.point(499, i, (0, 0, 0))
-			self.point(500, i, (0, 0, 0))
-			self.point(501, i, (0, 0, 0))'''
-
 		for enemy in enemies:
 			self.point(enemy["x"], enemy["y"], BLACK)
 			self.draw_sprite(enemy)
+		
+		for x in range(0, 100, 10):
+			for y in range(0, 100, 10):
+				i = int(x/10)
+				j = int(y/10)
+				if self.map[j][i] != ' ':
+					y = 500 + y
+					x1 = 900 + x
+					self.draw_rectangle(x1, y, textures[self.map[j][i]], 10)
 
-		self.draw_player(1000 - 256 - 128 - 75, 500 - 256)
+		self.point(int(self.player["x"] * 0.2) + 900, int(self.player["y"] * 0.2) + 500, LOSE)
+		
+		self.draw_player(1000 - 256 - 128 - 150, 500 - 256, hand)
 
 	def text_objects(self, text, font):
 		textSurface = font.render(text, True, WHITE)
@@ -192,15 +182,15 @@ class Raycaster:
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
 				"PROYECTO RAYCASTER", largeText)
-			TextRect.center = (int(1000/2), int(400/2))
+			TextRect.center = (int(1000/2), int(500/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE Q PARA EMPEZAR", mediumText)
-			TextRect.center = (int(1000/2), int(600/2))
+			TextRect.center = (int(1000/2), int(700/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(800/2))
+			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
 			clock.tick(15)
@@ -225,15 +215,15 @@ class Raycaster:
 			mediumText = pygame.font.Font('freesansbold.ttf', 35)
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects("GAME OVER", largeText)
-			TextRect.center = (int(1000/2), int(400/2))
+			TextRect.center = (int(1000/2), int(500/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE R PARA REINICIAR", mediumText)
-			TextRect.center = (int(1000/2), int(600/2))
+			TextRect.center = (int(1000/2), int(700/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(800/2))
+			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
 			clock.tick(15)
@@ -259,15 +249,15 @@ class Raycaster:
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
 				"NICE JOB, YOU WON", largeText)
-			TextRect.center = (int(1000/2), int(400/2))
+			TextRect.center = (int(1000/2), int(500/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE R PARA REINICIAR", mediumText)
-			TextRect.center = (int(1000/2), int(600/2))
+			TextRect.center = (int(1000/2), int(700/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(800/2))
+			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
 			clock.tick(15)
@@ -278,7 +268,6 @@ class Raycaster:
 		pygame.mixer.music.play(-1)
 
 	def game_start(self):
-
 		fuente = pygame.font.Font(None, 25)
 		clock = pygame.time.Clock()
 		paused = False
@@ -316,17 +305,20 @@ class Raycaster:
 			if not paused:
 				texto_de_salida = "FPS: " + str(round(clock.get_fps(), 2))
 				texto = fuente.render(texto_de_salida, True, WHITE)
-				screen.blit(texto, [600, 20])
+				screen.blit(texto, [600, 550])
+				if (r.player["x"] >= 400 and r.player["x"] <= 420) and (r.player["y"] >= 250 and r.player["y"] <= 265):
+					self.game_win() 
 				r.render()
 				pygame.display.flip()
+
 			
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
-screen = pygame.display.set_mode((1000, 500))
+screen = pygame.display.set_mode((1000, 600))
 screen.set_alpha(None)
 r = Raycaster(screen)
 r.load_map('./map.txt')
-gameDisplay = pygame.display.set_mode((1000, 500))
+gameDisplay = pygame.display.set_mode((1000, 600))
 pygame.display.set_caption('Raycaster - Proyecto 3')
 clock = pygame.time.Clock()
 r.game_intro()
