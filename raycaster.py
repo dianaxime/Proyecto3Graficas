@@ -285,7 +285,7 @@ class Raycaster:
 					self.game_win() 
 				r.render()
 				pygame.display.flip()
-				clock.tick(30)
+				clock.tick(15)
 			
 			for e in pygame.event.get():
 				if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
