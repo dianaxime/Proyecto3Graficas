@@ -316,7 +316,7 @@ class Raycaster:
 			
 
 			
-pygame.mixer.pre_init(44100, 16, 2, 4096)
+#pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 screen = pygame.display.set_mode((1000, 600))
 screen.set_alpha(None)
