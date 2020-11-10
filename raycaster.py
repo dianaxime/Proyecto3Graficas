@@ -26,8 +26,6 @@ enemy1 = pygame.image.load('./sprite1.png')
 
 hand = pygame.image.load('./player.png')
 
-flechas = pygame.image.load('./flechas.png')
-
 textures = {
 	"1": wall1,
 	"2": wall2,
@@ -193,7 +191,7 @@ class Raycaster:
 			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			clock.tick(15)
+			#clock.tick(15)
 
 	def game_over(self):
 		lose_sound = pygame.mixer.Sound('./perder.wav')
@@ -226,7 +224,7 @@ class Raycaster:
 			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			clock.tick(15)
+			#clock.tick(15)
 
 	def game_win(self):
 		win_sound = pygame.mixer.Sound('./ganar.wav')
@@ -260,22 +258,35 @@ class Raycaster:
 			TextRect.center = (int(1000/2), int(900/2))
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			clock.tick(15)
+			#clock.tick(15)
 
 	def sound(self):
 		pygame.mixer.music.load('./fondo.wav')
 		pygame.mixer.music.set_volume(0.8)
 		pygame.mixer.music.play(-1)
 
-	def game_start(self):
+	def fpsCounter(self):
 		fuente = pygame.font.Font(None, 25)
-		clock = pygame.time.Clock()
+		texto_de_salida = "FPS: " + str(round(clock.get_fps(), 2))
+		texto = fuente.render(texto_de_salida, True, WHITE)
+		return texto
+
+
+	def game_start(self):
 		paused = False
 		running = True
 		while running:
 			screen.fill(BACKGROUND)
 			d = 10
-			clock.tick(10)
+			if not paused:
+				
+				screen.blit(self.fpsCounter(), [600, 550])
+				if (r.player["x"] >= 400 and r.player["x"] <= 420) and (r.player["y"] >= 250 and r.player["y"] <= 265):
+					self.game_win() 
+				r.render()
+				pygame.display.flip()
+				clock.tick(30)
+			
 			for e in pygame.event.get():
 				if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
 					running = False
@@ -302,14 +313,7 @@ class Raycaster:
 							r.player['a'] -= pi/20
 						if e.button == 5:
 							r.player['a'] += pi/20
-			if not paused:
-				texto_de_salida = "FPS: " + str(round(clock.get_fps(), 2))
-				texto = fuente.render(texto_de_salida, True, WHITE)
-				screen.blit(texto, [600, 550])
-				if (r.player["x"] >= 400 and r.player["x"] <= 420) and (r.player["y"] >= 250 and r.player["y"] <= 265):
-					self.game_win() 
-				r.render()
-				pygame.display.flip()
+			
 
 			
 pygame.mixer.pre_init(44100, 16, 2, 4096)
