@@ -18,13 +18,16 @@ BACKGROUND = (190, 190, 190)
 INICIO = (5, 25, 40)
 WIN = (60, 130, 140)
 
-wall1 = pygame.image.load('./wall1.png')
-wall2 = pygame.image.load('./wall2.png')
-wall3 = pygame.image.load('./wall3.png')
+pygame.init()
+gameDisplay = pygame.display.set_mode((1000, 600))
 
-enemy1 = pygame.image.load('./sprite1.png')
+wall1 = pygame.image.load('./wall1.png').convert()
+wall2 = pygame.image.load('./wall2.png').convert()
+wall3 = pygame.image.load('./wall3.png').convert()
 
-hand = pygame.image.load('./player.png')
+enemy1 = pygame.image.load('./sprite1.png').convert()
+
+hand = pygame.image.load('./player.png').convert()
 
 textures = {
 	"1": wall1,
@@ -43,11 +46,13 @@ enemies = [
 TEXTURE_SIZE = 12.8
 PLAYER_SIZE = 0.125
 CAST_SIZE = 2.56
+PI_20 = 0.157
+DIV_FOV = 477.46
 
 class Raycaster:
-	def __init__(self, screen):
-		_, _, self.width, self.height = screen.get_rect()
-		self.screen = screen
+	def __init__(self, gameDisplay):
+		_, _, self.width, self.height = gameDisplay.get_rect()
+		self.gameDisplay = gameDisplay
 		self.blocksize = 50
 		self.map = []
 		self.zbuffer = [-float('inf') for z in range(0, 500)]
@@ -59,7 +64,7 @@ class Raycaster:
 		}
 
 	def point(self, x, y, c=None):
-		screen.set_at((x, y), c)
+		gameDisplay.set_at((x, y), c)
 
 	def draw_rectangle(self, x, y, texture, size):
 		for cx in range(x, x + size):
@@ -85,9 +90,11 @@ class Raycaster:
 
 	def cast_ray(self, a):
 		d = 0
+		cosa = cos(a)
+		sina = sin(a)
 		while True:
-			x = int(self.player["x"] + d * cos(a))
-			y = int(self.player["y"] + d * sin(a))
+			x = int(self.player["x"] + d * cosa)
+			y = int(self.player["y"] + d * sina)
 
 			i = int(x / self.blocksize)
 			j = int(y / self.blocksize)
@@ -104,10 +111,12 @@ class Raycaster:
 			d += 1
 
 	def draw_stake(self, x, h, tx, texture):
-		start = int(250 - h/2)
-		end = int(250 + h/2)
+		h_half = h/2
+		start = int(250 - h_half)
+		end = int(250 + h_half)
+		end_start_pro = 128 / (end - start)
 		for y in range(start, end):
-			ty = int((y - start) * (128 / (end - start)))
+			ty = int((y - start) * end_start_pro)
 			c = texture.get_at((tx, ty))
 			self.point(x, y, c)
 
@@ -116,16 +125,18 @@ class Raycaster:
 						 (sprite["x"] - self.player["x"]))
 		sprite_d = ((self.player["x"] - sprite["x"]) ** 2 +
 					(self.player["y"] - sprite["y"]) ** 2) ** 0.5
-		sprite_size = int(500/sprite_d * 70)
-		sprite_x = int(500 + (sprite_a - self.player["a"]) * 500/self.player["fov"] +
-					   250 - sprite_size/2)
-		sprite_y = int(250 - sprite_size/2)
+		sprite_size_half = int(250/sprite_d * 70)
+		sprite_size = sprite_size_half * 2
+		sprite_x = int(500 + (sprite_a - self.player["a"]) * DIV_FOV +
+					   250 - sprite_size_half)
+		sprite_y = int(250 - sprite_size_half)
 
+		sprite_size_pro = 128/sprite_size
 		for x in range(sprite_x, sprite_x + sprite_size):
 			for y in range(sprite_y, sprite_y + sprite_size):
 				if 500 < x < 1000 and self.zbuffer[x - 500] <= sprite_d:
-					tx = int((x - sprite_x) * 128/sprite_size)
-					ty = int((y - sprite_y) * 128/sprite_size)
+					tx = int((x - sprite_x) * sprite_size_pro)
+					ty = int((y - sprite_y) * sprite_size_pro)
 					c = sprite["texture"].get_at((tx, ty))
 					if c != (152, 0, 136, 255):
 						self.point(x, y, c)
@@ -135,7 +146,7 @@ class Raycaster:
 		for i in range(0, 1000):
 			try:
 				a = self.player["a"] - self.player["fov"] / \
-					2 + (i * self.player["fov"] / self.width)
+					2 + (i * 0.00105)
 				d, m, tx = self.cast_ray(a)
 				x = i
 				h = (500 / (d * cos(a - self.player["a"]))) * 50
@@ -279,17 +290,17 @@ class Raycaster:
 	def game_start(self):
 		paused = False
 		running = True
+		d = 10
 		while running:
-			screen.fill(BACKGROUND)
-			d = 10
+			gameDisplay.fill(BACKGROUND)
 			if not paused:
 				
-				screen.blit(self.fpsCounter(), [600, 550])
+				gameDisplay.blit(self.fpsCounter(), [600, 550])
 				if (r.player["x"] >= 400 and r.player["x"] <= 420) and (r.player["y"] >= 250 and r.player["y"] <= 265):
 					self.game_win() 
 				r.render()
 				pygame.display.flip()
-				clock.tick(15)
+				clock.tick(60)
 			
 			for e in pygame.event.get():
 				if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
@@ -298,35 +309,33 @@ class Raycaster:
 				if e.type == pygame.KEYDOWN:
 					if not paused:
 						if e.key == pygame.K_LEFT:
-							r.player["a"] -= pi/20
+							r.player["a"] -= PI_20
 						if e.key == pygame.K_RIGHT:
-							r.player["a"] += pi/20
+							r.player["a"] += PI_20
 						if e.key == pygame.K_UP:
 							r.player["x"] += int(d * cos(r.player["a"]))
 							r.player["y"] += int(d * sin(r.player["a"]))
 						if e.key == pygame.K_DOWN:
 							r.player["x"] -= int(d * cos(r.player["a"]))
 							r.player["y"] -= int(d * sin(r.player["a"]))
-						elif e.key == pygame.K_s: 
+						if e.key == pygame.K_s: 
 							r.sound()
 					if e.key == pygame.K_SPACE:
 						paused = not paused
 				if e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP:
 					if not paused:
 						if e.button == 4:
-							r.player['a'] -= pi/20
+							r.player['a'] -= PI_20
 						if e.button == 5:
-							r.player['a'] += pi/20
+							r.player['a'] += PI_20
 			
 
 			
 #pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
-screen = pygame.display.set_mode((1000, 600))
-screen.set_alpha(None)
-r = Raycaster(screen)
+
+gameDisplay.set_alpha(None)
+r = Raycaster(gameDisplay)
 r.load_map('./map.txt')
-gameDisplay = pygame.display.set_mode((1000, 600))
 pygame.display.set_caption('Raycaster - Proyecto 3')
 clock = pygame.time.Clock()
 r.game_intro()
