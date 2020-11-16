@@ -40,6 +40,10 @@ enemies = [
 	}
 ]
 
+TEXTURE_SIZE = 12.8
+PLAYER_SIZE = 0.125
+CAST_SIZE = 2.56
+
 class Raycaster:
 	def __init__(self, screen):
 		_, _, self.width, self.height = screen.get_rect()
@@ -60,16 +64,16 @@ class Raycaster:
 	def draw_rectangle(self, x, y, texture, size):
 		for cx in range(x, x + size):
 			for cy in range(y, y + size):
-				tx = int((cx - x) * 128/size)
-				ty = int((cy - y) * 128/size)
+				tx = int((cx - x) * TEXTURE_SIZE)
+				ty = int((cy - y) * TEXTURE_SIZE)
 				c = texture.get_at((tx, ty))
 				self.point(cx, cy, c)
 
 	def draw_player(self, xi, yi, element, w=256, h=256):
 		for x in range(xi, xi + w):
 			for y in range(yi, yi + h):
-				tx = int((x - xi) * 32/w)
-				ty = int((y - yi) * 32/h)
+				tx = int((x - xi) * PLAYER_SIZE)
+				ty = int((y - yi) * PLAYER_SIZE)
 				c = element.get_at((tx, ty))
 				if c != (152, 0, 136, 255):
 					self.point(x, y, c)
@@ -95,7 +99,7 @@ class Raycaster:
 					maxhit = hitx
 				else:
 					maxhit = hity
-				tx = int(maxhit * 128 / 50)
+				tx = int(maxhit * CAST_SIZE)
 				return d, self.map[j][i], tx
 			d += 1
 
@@ -147,8 +151,8 @@ class Raycaster:
 		
 		for x in range(0, 100, 10):
 			for y in range(0, 100, 10):
-				i = int(x/10)
-				j = int(y/10)
+				i = int(x * 0.1)
+				j = int(y * 0.1)
 				if self.map[j][i] != ' ':
 					y = 500 + y
 					x1 = 900 + x
