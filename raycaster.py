@@ -49,6 +49,11 @@ CAST_SIZE = 2.56
 PI_20 = 0.157
 DIV_FOV = 477.46
 
+WIDTH_POSITION = 500
+TITLE_POSITION = 250
+SUBTITLE_POSITION = 350
+TEXT_POSITION = 450
+
 class Raycaster:
 	def __init__(self, gameDisplay):
 		_, _, self.width, self.height = gameDisplay.get_rect()
@@ -152,8 +157,8 @@ class Raycaster:
 				h = (500 / (d * cos(a - self.player["a"]))) * 50
 				self.draw_stake(x, h, tx, textures[m])
 			except:
-				self.player["x"] = self.blocksize + 20
-				self.player["y"] = self.blocksize + 20
+				self.player["x"] = 70
+				self.player["y"] = 70
 				self.game_over()
 
 		for enemy in enemies:
@@ -171,7 +176,7 @@ class Raycaster:
 
 		self.point(int(self.player["x"] * 0.2) + 900, int(self.player["y"] * 0.2) + 500, LOSE)
 		
-		self.draw_player(1000 - 256 - 128 - 150, 500 - 256, hand)
+		self.draw_player(466, 244, hand)
 
 	def text_objects(self, text, font):
 		textSurface = font.render(text, True, WHITE)
@@ -195,18 +200,18 @@ class Raycaster:
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
 				"PROYECTO RAYCASTER", largeText)
-			TextRect.center = (int(1000/2), int(500/2))
+			TextRect.center = (WIDTH_POSITION, TITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE Q PARA EMPEZAR", mediumText)
-			TextRect.center = (int(1000/2), int(700/2))
+			TextRect.center = (WIDTH_POSITION, SUBTITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(900/2))
+			TextRect.center = (WIDTH_POSITION, TEXT_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			#clock.tick(15)
+			
 
 	def game_over(self):
 		lose_sound = pygame.mixer.Sound('./perder.wav')
@@ -228,18 +233,18 @@ class Raycaster:
 			mediumText = pygame.font.Font('freesansbold.ttf', 35)
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects("GAME OVER", largeText)
-			TextRect.center = (int(1000/2), int(500/2))
+			TextRect.center = (WIDTH_POSITION, TITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE R PARA REINICIAR", mediumText)
-			TextRect.center = (int(1000/2), int(700/2))
+			TextRect.center = (WIDTH_POSITION, SUBTITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(900/2))
+			TextRect.center = (WIDTH_POSITION, TEXT_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			#clock.tick(15)
+			
 
 	def game_win(self):
 		win_sound = pygame.mixer.Sound('./ganar.wav')
@@ -262,18 +267,18 @@ class Raycaster:
 			smallText = pygame.font.Font('freesansbold.ttf', 15)
 			TextSurf, TextRect = self.text_objects(
 				"NICE JOB, YOU WON", largeText)
-			TextRect.center = (int(1000/2), int(500/2))
+			TextRect.center = (WIDTH_POSITION, TITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"PRESIONE R PARA REINICIAR", mediumText)
-			TextRect.center = (int(1000/2), int(700/2))
+			TextRect.center = (WIDTH_POSITION, SUBTITLE_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			TextSurf, TextRect = self.text_objects(
 				"ESC PARA SALIR", smallText)
-			TextRect.center = (int(1000/2), int(900/2))
+			TextRect.center = (WIDTH_POSITION, TEXT_POSITION)
 			gameDisplay.blit(TextSurf, TextRect)
 			pygame.display.update()
-			#clock.tick(15)
+			
 
 	def sound(self):
 		pygame.mixer.music.load('./fondo.wav')
@@ -330,8 +335,6 @@ class Raycaster:
 							r.player['a'] += PI_20
 			
 
-			
-#pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 gameDisplay.set_alpha(None)
 r = Raycaster(gameDisplay)
